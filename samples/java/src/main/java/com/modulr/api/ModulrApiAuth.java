@@ -88,7 +88,8 @@ public class ModulrApiAuth {
     }
 
     public void setRetry(Boolean retry) {
-        this.retry = retry;
+        if (this.lastGeneratedHmac != null)
+            this.retry = retry;
     }
 
     private String formatAuthHeader(String token, String signature) {
