@@ -20,7 +20,7 @@ public class ModulrApiAuth {
     private Date date;
     private Boolean retry = false;
 
-    private String lastGeneratedHmac;
+    private String lastUsedNonce;
 
     public ModulrApiAuth(String token, String secret, String nonce) {
         this.token = token.trim();
@@ -48,15 +48,14 @@ public class ModulrApiAuth {
     public String generateHmac() throws SignatureException {
         final String hmac;
         if (this.retry) {
-            hmac = this.lastGeneratedHmac;
+            this.nonce = this.lastUsedNonce;
         } else {
-            validateFields();
-            String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
-            hmac = calculateHmac(data);
-            this.lastGeneratedHmac = hmac;
+            this.lastUsedNonce = this.nonce;
         }
 
-        return hmac;
+        validateFields();
+        String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
+        return calculateHmac(data);
     }
 
     public String getNonce() {
@@ -88,8 +87,7 @@ public class ModulrApiAuth {
     }
 
     public void setRetry(Boolean retry) {
-        if (this.lastGeneratedHmac != null)
-            this.retry = retry;
+        this.retry = retry;
     }
 
     private String formatAuthHeader(String token, String signature) {
