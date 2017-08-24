@@ -1,4 +1,4 @@
-package com.modulr.hmac;
+package com.modulr.api;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,22 +11,25 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ModulrAuth {
+public class ModulrApiAuth {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
     private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
-    private String secret;
-    private String token;
+    private final String secret;
+    private final String token;
     private String nonce;
     private Date date;
+    private Boolean retry = false;
 
-    public ModulrAuth(String token, String secret, String nonce) {
+    private String lastGeneratedHmac;
+
+    public ModulrApiAuth(String token, String secret, String nonce) {
         this.token = token.trim();
         this.secret = secret.trim();
         this.nonce = nonce.trim();
         this.date = new Date();
     }
 
-    public Map<String, String> getAuthHeaders() {
+    public Map<String, String> getApiAuthHeaders() {
         final Map<String, String> headerParams = new HashMap<>();
         try {
             String hmac = generateHmac();
@@ -34,6 +37,7 @@ public class ModulrAuth {
             headerParams.put("Authorization", authorizationHeader);
             headerParams.put("Date", getFormattedDate(this.date));
             headerParams.put("x-mod-nonce", this.nonce);
+            headerParams.put("x-mod-retry", String.valueOf(this.retry));
         } catch (SignatureException e) {
             e.printStackTrace();
         }
@@ -42,9 +46,16 @@ public class ModulrAuth {
     }
 
     public String generateHmac() throws SignatureException {
-        validateFields();
-        String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
-        return calculateHmac(data);
+        final String hmac;
+        if (this.retry) {
+            hmac = this.lastGeneratedHmac;
+        } else {
+            validateFields();
+            String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
+            hmac = calculateHmac(data);
+        }
+
+        return hmac;
     }
 
     public String getNonce() {
@@ -63,20 +74,20 @@ public class ModulrAuth {
         return secret;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Boolean getRetry() {
+        return retry;
+    }
+
+    public void setRetry(Boolean retry) {
+        this.retry = retry;
     }
 
     private String formatAuthHeader(String token, String signature) {

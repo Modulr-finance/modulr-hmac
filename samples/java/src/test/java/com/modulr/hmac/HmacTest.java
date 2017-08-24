@@ -1,6 +1,6 @@
 package com.modulr.hmac;
 
-import org.junit.Assert;
+import com.modulr.api.ModulrApiAuth;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +17,11 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class HmacTest {
-    private ModulrAuth modulrAuth;
+    private ModulrApiAuth modulrAuth;
 
     @Before
     public void setUp() {
-        modulrAuth = new ModulrAuth("KNOWN-TOKEN", "SECRET-TOKEN", "NONCE");
+        modulrAuth = new ModulrApiAuth("KNOWN-TOKEN", "SECRET-TOKEN", "NONCE");
     }
 
     @Test
@@ -33,10 +33,15 @@ public class HmacTest {
         modulrAuth.setDate(date);
         assertEquals("G9zfk3yPn861TKddM6wIxu4u0YU%3D", modulrAuth.generateHmac());
 
-        Map<String, String> headers = modulrAuth.getAuthHeaders();
-        assertEquals(headers.size(), 3);
+        Map<String, String> headers = modulrAuth.getApiAuthHeaders();
+        assertEquals(headers.size(), 4);
         assertEquals("Signature keyId=\"KNOWN-TOKEN\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"G9zfk3yPn861TKddM6wIxu4u0YU%3D\"", headers.get("Authorization"));
         assertEquals("NONCE", headers.get("x-mod-nonce"));
         assertEquals("Fri, 04 Aug 2017 10:10:20 GMT", headers.get("Date"));
+        assertEquals("false", headers.get("x-mod-retry"));
+
+        modulrAuth.setRetry(true);
+        Map<String, String> headersWithRetryOn = modulrAuth.getApiAuthHeaders();
+        assertEquals("true", headersWithRetryOn.get("x-mod-retry"));
     }
 }
