@@ -33,8 +33,8 @@ public class ModulrApiAuth {
         final Map<String, String> headerParams = new HashMap<>();
         try {
             String hmac = generateHmac();
-            String authorizationHeader = formatAuthHeader(this.token, hmac);
-            headerParams.put("Authorization", authorizationHeader);
+
+            headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
             headerParams.put("Date", getFormattedDate(this.date));
             headerParams.put("x-mod-nonce", this.nonce);
             headerParams.put("x-mod-retry", String.valueOf(this.retry));
@@ -53,6 +53,7 @@ public class ModulrApiAuth {
             validateFields();
             String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
             hmac = calculateHmac(data);
+            this.lastGeneratedHmac = hmac;
         }
 
         return hmac;
