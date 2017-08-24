@@ -12,6 +12,9 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+
 @RunWith(JUnit4.class)
 public class HmacTest {
     private ModulrAuth modulrAuth;
@@ -28,11 +31,12 @@ public class HmacTest {
         Date date = Date.from(dateTime.toInstant(ZoneOffset.UTC));
 
         modulrAuth.setDate(date);
-        Assert.assertEquals("G9zfk3yPn861TKddM6wIxu4u0YU%3D", modulrAuth.generateHmac());
+        assertEquals("G9zfk3yPn861TKddM6wIxu4u0YU%3D", modulrAuth.generateHmac());
 
         Map<String, String> headers = modulrAuth.getAuthHeaders();
-        Assert.assertEquals("Signature keyId=\"KNOWN-TOKEN\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"G9zfk3yPn861TKddM6wIxu4u0YU%3D\"", headers.get("Authorization"));
-        Assert.assertEquals("NONCE", headers.get("x-mod-nonce"));
-        Assert.assertEquals("Fri, 04 Aug 2017 10:10:20 GMT", headers.get("Date"));
+        assertEquals(headers.size(), 3);
+        assertEquals("Signature keyId=\"KNOWN-TOKEN\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"G9zfk3yPn861TKddM6wIxu4u0YU%3D\"", headers.get("Authorization"));
+        assertEquals("NONCE", headers.get("x-mod-nonce"));
+        assertEquals("Fri, 04 Aug 2017 10:10:20 GMT", headers.get("Date"));
     }
 }
