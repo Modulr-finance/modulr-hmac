@@ -16,54 +16,45 @@ public class ModulrApiAuth {
     private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
     private final String secret;
     private final String token;
-    private String nonce;
     private Date date;
-    private Boolean retry = false;
 
     private String lastUsedNonce;
 
-    public ModulrApiAuth(String token, String secret, String nonce) {
+    public ModulrApiAuth(String token, String secret) {
         this.token = token.trim();
         this.secret = secret.trim();
-        this.nonce = nonce.trim();
-        this.date = new Date();
     }
 
-    public Map<String, String> getApiAuthHeaders() {
+    public Map<String, String> generateApiAuthHeaders(String nonce) {
+        return buildHeaders(nonce, false);
+    }
+
+    public Map<String, String> generateRetryApiAuthHeaders() {
+        return buildHeaders(this.lastUsedNonce, true);
+    }
+
+    private Map<String, String> buildHeaders(String nonce, Boolean retry) {
         final Map<String, String> headerParams = new HashMap<>();
         try {
-            String hmac = generateHmac();
+            String hmac = generateHmac(nonce);
 
             headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
-            headerParams.put("Date", getFormattedDate(this.date));
-            headerParams.put("x-mod-nonce", this.nonce);
-            headerParams.put("x-mod-retry", String.valueOf(this.retry));
+            headerParams.put("Date", getFormattedDate(this.getDate()));
+            headerParams.put("x-mod-nonce", nonce);
+            headerParams.put("x-mod-retry", String.valueOf(retry));
+
+            this.lastUsedNonce = nonce;
         } catch (SignatureException e) {
             e.printStackTrace();
         }
-
         return headerParams;
     }
 
-    public String generateHmac() throws SignatureException {
-        final String hmac;
-        if (this.retry) {
-            this.nonce = this.lastUsedNonce;
-        } else {
-            this.lastUsedNonce = this.nonce;
-        }
-
+    private String generateHmac(String nonce) throws SignatureException {
         validateFields();
-        String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.date), this.nonce);
+        this.date = new Date();
+        String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
         return calculateHmac(data);
-    }
-
-    public String getNonce() {
-        return nonce;
-    }
-
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
     }
 
     public Date getDate() {
@@ -80,14 +71,6 @@ public class ModulrApiAuth {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Boolean getRetry() {
-        return retry;
-    }
-
-    public void setRetry(Boolean retry) {
-        this.retry = retry;
     }
 
     private String formatAuthHeader(String token, String signature) {
