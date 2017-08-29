@@ -69,10 +69,6 @@ public class ModulrApiAuth {
         return token;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     private String formatAuthHeader(String token, String signature) {
         return String.format("Signature keyId=\"%s\",algorithm=\"%s\",headers=\"date x-mod-nonce\",signature=\"%s\"", token, "hmac-sha1", signature);
     }
