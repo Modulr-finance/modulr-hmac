@@ -25,28 +25,25 @@ public class ModulrApiAuth {
         this.secret = secret.trim();
     }
 
-    public Map<String, String> generateApiAuthHeaders(String nonce) {
+    public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
         return buildHeaders(nonce, false);
     }
 
-    public Map<String, String> generateRetryApiAuthHeaders() {
+    public Map<String, String> generateRetryApiAuthHeaders() throws SignatureException {
         return buildHeaders(this.lastUsedNonce, true);
     }
 
-    private Map<String, String> buildHeaders(String nonce, Boolean retry) {
+    private Map<String, String> buildHeaders(String nonce, Boolean retry) throws SignatureException {
         final Map<String, String> headerParams = new HashMap<>();
-        try {
-            String hmac = generateHmac(nonce);
+        String hmac = generateHmac(nonce);
 
-            headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
-            headerParams.put("Date", getFormattedDate(this.getDate()));
-            headerParams.put("x-mod-nonce", nonce);
-            headerParams.put("x-mod-retry", String.valueOf(retry));
+        headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
+        headerParams.put("Date", getFormattedDate(this.getDate()));
+        headerParams.put("x-mod-nonce", nonce);
+        headerParams.put("x-mod-retry", String.valueOf(retry));
 
-            this.lastUsedNonce = nonce;
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
+        this.lastUsedNonce = nonce;
+
         return headerParams;
     }
 
@@ -86,7 +83,6 @@ public class ModulrApiAuth {
             String hmac = Base64.getEncoder().encodeToString(rawHmac);
             return URLEncoder.encode(hmac, "UTF-8");
         } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
-            e.printStackTrace();
             throw new SignatureException("Failed to generate HMAC : " + e.getMessage(), e);
         }
     }
