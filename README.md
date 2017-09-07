@@ -7,7 +7,7 @@ Samples directory contain sample code for the following languages:
 ---
 
 ### Java Sample
-#### [com.modulr.api.ModulrApiAuth.java](samples/java/src/main/java/com/modulr/api/ApiKeyAModulrApiAuth.java)
+#### [com.modulr.api.ModulrApiAuth.java](samples/java/src/main/java/com/modulr/api/ModulrApiAuth.java)
 This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
 * Authorization
 * Date
