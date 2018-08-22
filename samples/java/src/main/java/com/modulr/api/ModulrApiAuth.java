@@ -50,7 +50,7 @@ public class ModulrApiAuth {
     private String generateHmac(String nonce) throws SignatureException {
         validateFields();
         this.date = new Date();
-        String data = String.format("date: %s nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
+        String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
         return calculateHmac(data);
     }
 
