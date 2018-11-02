@@ -10,6 +10,7 @@ import java.security.SignatureException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class ModulrApiAuth {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
@@ -17,12 +18,19 @@ public class ModulrApiAuth {
     private final String secret;
     private final String token;
     private Date date;
+    private Supplier<Date> dateSupplier;
 
     private String lastUsedNonce;
 
+
     public ModulrApiAuth(String token, String secret) {
+        this(token, secret, Date::new);
+    }
+
+    public ModulrApiAuth(String token, String secret, Supplier<Date> dateSupplier) {
         this.token = token.trim();
         this.secret = secret.trim();
+        this.dateSupplier = dateSupplier;
     }
 
     public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
@@ -49,7 +57,7 @@ public class ModulrApiAuth {
 
     private String generateHmac(String nonce) throws SignatureException {
         validateFields();
-        this.date = new Date();
+        this.date = dateSupplier.get();
         String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
         return calculateHmac(data);
     }

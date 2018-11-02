@@ -8,13 +8,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.security.SignatureException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Supplier;
 
 
 import static org.junit.Assert.*;
@@ -29,23 +30,21 @@ public class ModulrApiAuthTest {
     private static final String NONCE = "28154b2-9c62b93cc22a-24c9e2-5536d7d";
     private static final String EXPECTED_HMAC_SIGNATURE = "WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D";
 
-    private ModulrApiAuth modulrAuth;
-
-    @Before
-    public void setUp() {
-        modulrAuth = spy(new ModulrApiAuth(API_TOKEN, HMAC_SECRET));
-    }
+    private ModulrApiAuth underTest;
 
     @Test
     public void testHmacGenerator() throws SignatureException {
+
+        underTest = spy(new ModulrApiAuth(API_TOKEN, HMAC_SECRET));
+
         LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
         ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
 
         Date date = Date.from(utcDateTime.toInstant());
 
         /* Generate headers and assert they are as expected */
-        when(modulrAuth.getDate()).thenReturn(date);
-        Map<String, String> headers = modulrAuth.generateApiAuthHeaders(NONCE);
+        when(underTest.getDate()).thenReturn(date);
+        Map<String, String> headers = underTest.generateApiAuthHeaders(NONCE);
         assertEquals(headers.size(), 4);
         assertEquals(NONCE, headers.get("x-mod-nonce"));
         assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.format(utcDateTime), headers.get("Date"));
@@ -57,8 +56,42 @@ public class ModulrApiAuthTest {
          * Date should not be same as previous
          * Nonce should be same as previous
          * Signature will be different because the date has changed */
-        when(modulrAuth.getDate()).thenCallRealMethod();
-        Map<String, String> headersWithRetryOn = modulrAuth.generateRetryApiAuthHeaders();
+        when(underTest.getDate()).thenCallRealMethod();
+        Map<String, String> headersWithRetryOn = underTest.generateRetryApiAuthHeaders();
+        assertEquals("true", headersWithRetryOn.get("x-mod-retry"));
+        assertEquals(headers.get("x-mod-nonce"), headersWithRetryOn.get("x-mod-nonce"));
+        assertNotEquals(headers.get("Date"), headersWithRetryOn.get("Date"));
+        assertNotEquals(headers.get("Authorization"), headersWithRetryOn.get("Authorization"));
+    }
+
+
+    @Test
+    public void testHmacGeneratorWithDatSupplier() throws SignatureException {
+
+        Supplier<Date> dateSupplier = (Supplier<Date>) mock(Supplier.class);
+
+        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
+        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+
+        Date date = Date.from(utcDateTime.toInstant());
+        when(dateSupplier.get()).thenReturn(date).thenReturn(new Date());
+
+        underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, dateSupplier);
+
+        /* Generate headers and assert they are as expected */
+        Map<String, String> headers = underTest.generateApiAuthHeaders(NONCE);
+        assertEquals(headers.size(), 4);
+        assertEquals(NONCE, headers.get("x-mod-nonce"));
+        assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.format(utcDateTime), headers.get("Date"));
+        assertEquals("false", headers.get("x-mod-retry"));
+        assertEquals("Signature keyId=\""+ API_TOKEN+ "\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"" + EXPECTED_HMAC_SIGNATURE + "\"", headers.get("Authorization"));
+
+        /* Generate retry headers and assert they are as expected
+         * x-mod-retry should be true
+         * Date should not be same as previous
+         * Nonce should be same as previous
+         * Signature will be different because the date has changed */
+        Map<String, String> headersWithRetryOn = underTest.generateRetryApiAuthHeaders();
         assertEquals("true", headersWithRetryOn.get("x-mod-retry"));
         assertEquals(headers.get("x-mod-nonce"), headersWithRetryOn.get("x-mod-nonce"));
         assertNotEquals(headers.get("Date"), headersWithRetryOn.get("Date"));
