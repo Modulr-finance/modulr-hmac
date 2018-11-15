@@ -28,7 +28,7 @@ public class ModulrApiAuth {
     }
 
     public ModulrApiAuth(String token, String secret, Supplier<Date> dateSupplier) {
-        this.token = token.trim();
+        this.token = (token != null) ? token.trim() : null;
         this.secret = secret.trim();
         this.dateSupplier = dateSupplier;
     }
@@ -55,7 +55,7 @@ public class ModulrApiAuth {
         return headerParams;
     }
 
-    private String generateHmac(String nonce) throws SignatureException {
+    public String generateHmac(String nonce) throws SignatureException {
         validateFields();
         this.date = dateSupplier.get();
         String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
@@ -102,12 +102,11 @@ public class ModulrApiAuth {
     }
 
     private void validateFields() {
-        if (this.token == null) {
-            throw new IllegalStateException("Token required for Modulr API Auth");
-        }
-
         if (this.secret == null) {
             throw new IllegalStateException("Secret required for Modulr API Auth");
+        }
+        if (this.dateSupplier == null) {
+            throw new IllegalStateException("A date supplier is required for Modulr API Auth");
         }
     }
 
