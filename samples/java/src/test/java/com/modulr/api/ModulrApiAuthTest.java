@@ -33,8 +33,7 @@ public class ModulrApiAuthTest {
     private ModulrApiAuth underTest;
 
     @Test
-    public void testHmacGenerator() throws SignatureException {
-
+    public void testHmacGeneratorWithNonNullToken() throws SignatureException {
         underTest = spy(new ModulrApiAuth(API_TOKEN, HMAC_SECRET));
 
         LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
@@ -62,6 +61,17 @@ public class ModulrApiAuthTest {
         assertEquals(headers.get("x-mod-nonce"), headersWithRetryOn.get("x-mod-nonce"));
         assertNotEquals(headers.get("Date"), headersWithRetryOn.get("Date"));
         assertNotEquals(headers.get("Authorization"), headersWithRetryOn.get("Authorization"));
+    }
+
+    @Test
+    public void testHmacGeneratorWithNullToken() throws SignatureException {
+        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
+        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+
+        Date date = Date.from(utcDateTime.toInstant());
+        underTest = spy(new ModulrApiAuth(null, HMAC_SECRET, () -> date));
+
+        assertEquals(EXPECTED_HMAC_SIGNATURE, underTest.generateHmac(NONCE));
     }
 
 
