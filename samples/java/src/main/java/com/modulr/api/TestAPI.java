@@ -13,13 +13,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-// Small demo program to perform a get on an account on the Modulr sanbox
-// replace the api key value with your the api-key you were provided with
-// replace the secret with the secret key you were provided with
-// this can be run from your favorite IDE.
-// you might need to change the account number
+// Small demo program to perform a API get call on an account on the Modulr sanbox.
+// Replace the api key value with your api-key.
+// Replace the secret with your secret key.
+// Replace the account id with your account id.
+// This can be run from your favorite IDE.
 public class TestAPI {
-    private static final String MODULR_URL = "https://api-sandbox.modulrfinance.com/api-sandbox/accounts/A120940C";
+
+    private static final String accountId = "<YOUR ACCOUNT ID>"; // Will be of the format A120940C
+    private static final String MODULR_URL = "https://api-sandbox.modulrfinance.com/api-sandbox/accounts/" + accountId;
     private static final String api_key = "<YOUR KEY>";
     private static final String secret = "<YOUR SECRET>";
 
