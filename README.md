@@ -38,4 +38,4 @@ This class demonstrates how to use the ModulrApiAuth class.
 ---
 
 ## Authentication process
-An in depth documentation of the whole authentication process can be found at [HMAC Signatures / Authorisation header calculation](https://modulr.readme.io/v1.0.1/docs/hmac-signatures-authorisation-header-calculation)
+An in depth documentation of the whole authentication process can be found at [HMAC Signatures / Authorisation header calculation](https://modulr.readme.io/docs/hmac-signatures-authorisation-header-calculation)
