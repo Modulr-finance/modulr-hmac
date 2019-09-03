@@ -3,6 +3,7 @@
 ## Samples
 Samples directory contain sample code for the following languages:
 - Java
+- NodeJS
 
 ---
 
@@ -36,6 +37,20 @@ OR
 This class demonstrates how to use the ModulrApiAuth class. 
 
 ---
+
+### NodeJS Sample
+
+To run an example, make sure that you 
+
+* Have NodeJS installed
+* Set environment variables `API_KEY` and `API_SECRET`
+
+Then call from your shell:
+
+```bash
+npm i
+npm run start
+```
 
 ## Authentication process
 An in depth documentation of the whole authentication process can be found at [HMAC Signatures / Authorisation header calculation](https://modulr.readme.io/docs/hmac-signatures-authorisation-header-calculation)
