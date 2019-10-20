@@ -1,0 +1,16 @@
+{
+  "name": "modulr-client",
+  "version": "1.0.0",
+  "description": "Demo for calling Modulr API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "Jenya Y.",
+  "license": "ISC",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "request": "^2.88.0",
+    "uuid": "^3.3.3"
+  }
+}
