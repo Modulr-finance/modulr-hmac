@@ -31,15 +31,20 @@ public class ModulrApiAuthTest {
     private static final String EXPECTED_HMAC_SIGNATURE = "WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D";
 
     private ModulrApiAuth underTest;
+    private LocalDateTime dateTime;
+    private ZonedDateTime utcDateTime;
+    private Date date;
+
+    @Before
+    public void setUp() {
+        dateTime = LocalDateTime.parse(DATE_STR);
+        utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+        date = Date.from(utcDateTime.toInstant());
+    }
 
     @Test
     public void testHmacGeneratorWithNonNullToken() throws SignatureException {
         underTest = spy(new ModulrApiAuth(API_TOKEN, HMAC_SECRET));
-
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
-
-        Date date = Date.from(utcDateTime.toInstant());
 
         /* Generate headers and assert they are as expected */
         when(underTest.getDate()).thenReturn(date);
@@ -65,27 +70,15 @@ public class ModulrApiAuthTest {
 
     @Test
     public void testHmacGeneratorWithNullToken() throws SignatureException {
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
-
-        Date date = Date.from(utcDateTime.toInstant());
         underTest = spy(new ModulrApiAuth(null, HMAC_SECRET, () -> date));
-
         assertEquals(EXPECTED_HMAC_SIGNATURE, underTest.generateHmac(NONCE));
     }
 
 
     @Test
     public void testHmacGeneratorWithDatSupplier() throws SignatureException {
-
         Supplier<Date> dateSupplier = (Supplier<Date>) mock(Supplier.class);
-
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
-
-        Date date = Date.from(utcDateTime.toInstant());
         when(dateSupplier.get()).thenReturn(date).thenReturn(new Date());
-
         underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, dateSupplier);
 
         /* Generate headers and assert they are as expected */
