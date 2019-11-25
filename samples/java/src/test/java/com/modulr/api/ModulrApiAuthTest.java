@@ -70,7 +70,7 @@ public class ModulrApiAuthTest {
 
 
     @Test
-    public void testHmacGeneratorWithDatSupplier() throws SignatureException {
+    public void testHmacGeneratorWithDateSupplier() throws SignatureException {
         Supplier<Date> dateSupplier = (Supplier<Date>) mock(Supplier.class);
         when(dateSupplier.get()).thenReturn(date).thenReturn(new Date());
         ModulrApiAuth authApi = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, dateSupplier);
