@@ -100,25 +100,25 @@ public class ModulrApiAuth {
         return sdf.format(date);
     }
 
-    private void setDateSupplier(Supplier<Date> dateSupplier) {
+    private Supplier<Date> setDateSupplier(Supplier<Date> dateSupplier) {
         if (dateSupplier == null) {
             throw new IllegalStateException("A date supplier is required for Modulr API Auth");
         }
-        this.dateSupplier = dateSupplier;
+        return dateSupplier;
     }
 
-    private void setSecret(String secret){
+    private String setSecret(String secret){
         if (secret == null) {
             throw new IllegalStateException("Secret required for Modulr API Auth");
         }
-        this.SECRET = secret.trim();
+        return secret.trim();
     }
 
-    private void setApiKey(String apiKey){
+    private String setApiKey(String apiKey){
         if (apiKey == null){
             return null;
         }
-        this.API_KEY = apiKey.trim();
+        return apiKey.trim();
     }
 
 }
