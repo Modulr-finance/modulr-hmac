@@ -56,7 +56,6 @@ public class ModulrApiAuth {
     }
 
     public String generateHmac(String nonce) throws SignatureException {
-        validateFields();
         this.date = dateSupplier.get();
         String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
         return calculateHmac(data);
@@ -101,10 +100,11 @@ public class ModulrApiAuth {
         return sdf.format(date);
     }
 
-    private void validateFields() {
-        if (this.dateSupplier == null) {
+    private void setDateSupplier(Supplier<Date> dateSupplier) {
+        if (dateSupplier == null) {
             throw new IllegalStateException("A date supplier is required for Modulr API Auth");
         }
+        this.dateSupplier = dateSupplier;
     }
 
     private void setSecret(String secret){
