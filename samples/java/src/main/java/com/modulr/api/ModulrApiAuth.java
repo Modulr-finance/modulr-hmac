@@ -16,21 +16,21 @@ public class ModulrApiAuth {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
     private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
     private final String secret;
-    private final String token;
+    private final String apiKey;
     private Date date;
     private Supplier<Date> dateSupplier;
 
     private String lastUsedNonce;
 
 
-    public ModulrApiAuth(String token, String secret) {
-        this(token, secret, Date::new);
+    public ModulrApiAuth(String apiKey, String secret) {
+        this(apiKey, secret, Date::new);
     }
 
     public ModulrApiAuth(String apiKey, String secret, Supplier<Date> dateSupplier) {
-        this.API_KEY = setApiKey(apiKey);
-        setSecret(secret);
-        setDateSupplier(dateSupplier);
+        this.apiKey = setApiKey(apiKey);
+        this.secret = setSecret(secret);
+        this.dateSupplier = setDateSupplier(dateSupplier);
     }
 
     public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
@@ -45,7 +45,7 @@ public class ModulrApiAuth {
         final Map<String, String> headerParams = new HashMap<>();
         String hmac = generateHmac(nonce);
 
-        headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
+        headerParams.put("Authorization", formatAuthHeader(this.apiKey, hmac));
         headerParams.put("Date", getFormattedDate(this.getDate()));
         headerParams.put("x-mod-nonce", nonce);
         headerParams.put("x-mod-retry", String.valueOf(retry));
@@ -74,8 +74,8 @@ public class ModulrApiAuth {
         return token;
     }
 
-    private String formatAuthHeader(String token, String signature) {
-        return String.format("Signature keyId=\"%s\",algorithm=\"%s\",headers=\"date x-mod-nonce\",signature=\"%s\"", token, "hmac-sha1", signature);
+    private String formatAuthHeader(String apiKey, String signature) {
+        return String.format("Signature keyId=\"%s\",algorithm=\"%s\",headers=\"date x-mod-nonce\",signature=\"%s\"", apiKey, "hmac-sha1", signature);
     }
 
     private String calculateHmac(final String content) throws SignatureException {
@@ -114,11 +114,11 @@ public class ModulrApiAuth {
         this.SECRET = secret.trim();
     }
 
-    private String setToken(String token){
-        if (token == null){
-           return null;
+    private void setApiKey(String apiKey){
+        if (apiKey == null){
+            return null;
         }
-        this.TOKEN = token.trim()
+        this.API_KEY = apiKey.trim();
     }
 
 }
