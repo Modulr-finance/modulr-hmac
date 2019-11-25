@@ -27,10 +27,10 @@ public class ModulrApiAuth {
         this(token, secret, Date::new);
     }
 
-    public ModulrApiAuth(String token, String secret, Supplier<Date> dateSupplier) {
-        this.token = (token != null) ? token.trim() : null;
-        this.secret = secret.trim();
-        this.dateSupplier = dateSupplier;
+    public ModulrApiAuth(String apiKey, String secret, Supplier<Date> dateSupplier) {
+        this.API_KEY = setApiKey(apiKey);
+        setSecret(secret);
+        setDateSupplier(dateSupplier);
     }
 
     public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
@@ -102,12 +102,16 @@ public class ModulrApiAuth {
     }
 
     private void validateFields() {
-        if (this.secret == null) {
-            throw new IllegalStateException("Secret required for Modulr API Auth");
-        }
         if (this.dateSupplier == null) {
             throw new IllegalStateException("A date supplier is required for Modulr API Auth");
         }
+    }
+
+    private void setSecret(String secret){
+        if (secret == null) {
+            throw new IllegalStateException("Secret required for Modulr API Auth");
+        }
+        this.SECRET = secret.trim();
     }
 
 }
