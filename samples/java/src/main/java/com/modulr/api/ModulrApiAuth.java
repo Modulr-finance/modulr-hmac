@@ -19,7 +19,6 @@ public class ModulrApiAuth {
     private final String apiKey;
     private Date date;
     private Supplier<Date> dateSupplier;
-
     private String lastUsedNonce;
 
 
@@ -41,6 +40,16 @@ public class ModulrApiAuth {
         return buildHeaders(this.lastUsedNonce, true);
     }
 
+    public String generateHmac(String nonce) throws SignatureException {
+        this.date = dateSupplier.get();
+        String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
+        return calculateHmac(data);
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
     private Map<String, String> buildHeaders(String nonce, Boolean retry) throws SignatureException {
         final Map<String, String> headerParams = new HashMap<>();
         String hmac = generateHmac(nonce);
@@ -53,24 +62,6 @@ public class ModulrApiAuth {
         this.lastUsedNonce = nonce;
 
         return headerParams;
-    }
-
-    public String generateHmac(String nonce) throws SignatureException {
-        this.date = dateSupplier.get();
-        String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
-        return calculateHmac(data);
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     private String formatAuthHeader(String apiKey, String signature) {
