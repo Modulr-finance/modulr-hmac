@@ -114,4 +114,11 @@ public class ModulrApiAuth {
         this.SECRET = secret.trim();
     }
 
+    private String setToken(String token){
+        if (token == null){
+           return null;
+        }
+        this.TOKEN = token.trim()
+    }
+
 }
