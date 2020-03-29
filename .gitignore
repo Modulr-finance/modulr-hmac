@@ -1,3 +1,8 @@
 **.idea/
 .gradle/
 **out/
+samples/java/.classpath
+samples/java/.project
+samples/java/.settings/
+samples/java/bin/
+**__pycache__
