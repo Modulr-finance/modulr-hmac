@@ -141,3 +141,36 @@ Then call from your shell:
 ```bash
     python samples/python/example.py
 ```
+
+### Postman pre-request script
+
+#### [pre-request-script.js](samples/postman/pre-request-script.js)
+
+This script is used to generate the Authorisation, Nonce and Date headers required to successfully call the Modulr Sandbox API using HMAC
+ 
+In order to make use of this script, you will need to initialise the environment variables required first which are:
+- **api_key** - defaulted to the api key Modulr will give you when you sign up for a sandbox account
+- **api_secret** - defaulted to the api key Modulr will give you when you sign up for a sandbox account
+- **authorization** - empty on default
+- **nonce** - empty on default
+- **date** - empty on default
+
+For further information on environment variables in Postman, see https://learning.postman.com/docs/postman/variables-and-environments/variables/
+
+Once your variables have been set up, you should see something like this:
+![Environment Variables Example](samples/postman/screenshots/postman_env_variables.png)
+
+When creating a new http call, select the "Pre-request Script" tab and paste the [pre-request-script.js](samples/postman/pre-request-script.js)
+file into the text area
+
+Finally, create a new set of headers in the Headers tab in Postman:
+```
+Authorization | {{authorization}}
+x-mod-nonce | {{nonce}}
+Date | {{date}} 
+```
+they should look something like this:
+
+![Headers](samples/postman/screenshots/postman_headers.png) 
+
+Postman should now be set up to make HMAC requests to Modulr's Sandbox APIs
