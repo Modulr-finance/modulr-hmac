@@ -14,6 +14,7 @@ Samples directory contain sample code for the following languages:
 - [NodeJS](#nodejs)
 - [Postman](#postman-pre-request-script)
 - [Python](#python)
+- [C](#c)
 ---
 
 ### Java
@@ -175,3 +176,29 @@ Then call from your shell:
 ```bash
     python samples/python/example.py
 ```
+
+### C
+
+#### [sample.c](samples/c/sample.c)
+
+To compile and run the sample:
+
+```bash
+    gcc -o sample sample.c ModulrApiAuth.c -lcrypto -lssl -lcurl
+    ./sample
+```
+
+#### Libraries
+
+You will need to install the following libraries
+
+- OpenSSL
+- Libcurl
+
+To install these in Ubuntu, for example:
+
+```bash
+    sudo apt install libssl-dev
+    sudo apt install libcurl4-openssl-dev
+```
+
