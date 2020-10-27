@@ -5,4 +5,5 @@ samples/java/.classpath
 samples/java/.project
 samples/java/.settings/
 samples/java/bin/
+samples/kotlin/build/
 **__pycache__

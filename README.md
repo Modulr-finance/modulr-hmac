@@ -11,6 +11,7 @@ Please note the samples are designed to be self contained to demonstrate hmac si
 Samples directory contain sample code for the following languages:
 
 - [Java](#java)
+- [Kotlin](#kotlin)
 - [NodeJS](#nodejs)
 - [Postman](#postman-pre-request-script)
 - [Python](#python)
@@ -52,6 +53,44 @@ OR
 #### [com.modulr.hmac.Hmac.java](samples/java/src/main/java/com/modulr/hmac/Hmac.java)
 
 This class demonstrates how to use the ModulrApiAuth class.
+
+---
+
+### Kotlin
+
+#### [com.modulr.api.Signature.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Signature.kt)
+
+This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+
+To use this class instantiate it using your API key and secret.
+
+```kotlin
+    val signature = Singature(API_KEY, API_SECRET)
+```
+
+Then use the calculate() to get generated headers.
+
+```kotlin
+    val result = signature.calculate()
+    val headers = result.headers
+```
+
+OR with a specific nonce and date
+
+```kotlin
+    val date = Date.from(ZonedDateTime.of(LocalDateTime.parse("2016-07-25T16:36:07"), ZoneId.of("Z")).toInstant())
+
+    val result = signature.calculate("28154b2-9c62b93cc22a-24c9e2-5536d7d", date)
+    val headers = result.headers
+```
+
+#### [com.modulr.api.Example.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Example.kt)
+
+This object demonstrates how to use the Signature class.
 
 ---
 
