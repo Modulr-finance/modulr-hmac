@@ -14,6 +14,7 @@ Samples directory contain sample code for the following languages:
 - [NodeJS](#nodejs)
 - [Postman](#postman-pre-request-script)
 - [Python](#python)
+- [Ruby](#ruby)
 ---
 
 ### Java
@@ -174,4 +175,47 @@ Then call from your shell:
 
 ```bash
     python samples/python/example.py
+```
+
+---
+
+### Ruby
+
+#### [api_auth.Signature](samples/ruby/lib/api_auth.rb)
+
+This class can generate required headers for a given value of API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+
+To use this class, instantiate it using your API key and secret.
+
+```ruby
+    signature = Signature.new(api_key: API_KEY, api_secret: API_SECRET)
+```
+
+Then use the calculate() to get generated headers.
+
+```ruby
+    result = signature.calculate
+    headers = result.headers
+```
+OR with a specific nonce and date
+
+```ruby
+    result = signature.calculate(nonce: '28154b2-9c62b93cc22a-24c9e2-5536d7d', timestamp: 'Mon, 25 Jul 2016 16:36:07 GMT')
+    headers = result.headers
+```
+
+To run the sample, make sure that you have
+
+- Updateded the API_KEY and API_SECRET in [example.rb](samples/ruby/example.rb) to your API key and secret
+
+Then call from your shell:
+
+```bash
+    cd samples/ruby
+    bundle install
+    rake run
 ```

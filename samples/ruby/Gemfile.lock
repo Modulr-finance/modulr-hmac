@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.14.2)
+    rake (13.0.1)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  minitest
+  rake
+
+BUNDLED WITH
+   2.1.4
