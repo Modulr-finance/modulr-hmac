@@ -1,0 +1,9 @@
+task default: %w[test]
+
+task :run do
+    ruby 'example.rb'
+end
+
+task :test do
+    ruby 'test/api_auth_test.rb'
+end

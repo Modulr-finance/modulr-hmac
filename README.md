@@ -11,11 +11,12 @@ Please note the samples are designed to be self contained to demonstrate hmac si
 Samples directory contain sample code for the following languages:
 
 - [Java](#java)
+- [Kotlin](#kotlin)
 - [NodeJS](#nodejs)
 - [Postman](#postman-pre-request-script)
 - [Python](#python)
 - [C](#c)
----
+- [Ruby](#ruby)
 
 ### Java
 
@@ -53,6 +54,44 @@ OR
 #### [com.modulr.hmac.Hmac.java](samples/java/src/main/java/com/modulr/hmac/Hmac.java)
 
 This class demonstrates how to use the ModulrApiAuth class.
+
+---
+
+### Kotlin
+
+#### [com.modulr.api.Signature.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Signature.kt)
+
+This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+
+To use this class instantiate it using your API key and secret.
+
+```kotlin
+    val signature = Singature(API_KEY, API_SECRET)
+```
+
+Then use the calculate() to get generated headers.
+
+```kotlin
+    val result = signature.calculate()
+    val headers = result.headers
+```
+
+OR with a specific nonce and date
+
+```kotlin
+    val date = Date.from(ZonedDateTime.of(LocalDateTime.parse("2016-07-25T16:36:07"), ZoneId.of("Z")).toInstant())
+
+    val result = signature.calculate("28154b2-9c62b93cc22a-24c9e2-5536d7d", date)
+    val headers = result.headers
+```
+
+#### [com.modulr.api.Example.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Example.kt)
+
+This object demonstrates how to use the Signature class.
 
 ---
 
@@ -165,11 +204,10 @@ OR with a specific nonce and date
     headers = result.get_http_headers()
 ```
 
-
 To run the sample, make sure that you have
 
 - Installed [Requests: HTTP For Humans](https://requests.readthedocs.io/en/master/)
-- Updateded the API_KEY and API_SECRET in [example.py](samples/python/example.py) to your API key and secret
+- Updated the API_KEY and API_SECRET in [example.py](samples/python/example.py) to your API key and secret
 
 Then call from your shell:
 
@@ -202,3 +240,43 @@ To install these in Ubuntu, for example:
     sudo apt install libcurl4-openssl-dev
 ```
 
+### Ruby
+
+#### [api_auth.Signature](samples/ruby/lib/api_auth.rb)
+
+This class can generate required headers for a given value of API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+
+To use this class, instantiate it using your API key and secret.
+
+```ruby
+    signature = Signature.new(api_key: API_KEY, api_secret: API_SECRET)
+```
+
+Then use the calculate() to get generated headers.
+
+```ruby
+    result = signature.calculate
+    headers = result.headers
+```
+OR with a specific nonce and date
+
+```ruby
+    result = signature.calculate(nonce: '28154b2-9c62b93cc22a-24c9e2-5536d7d', timestamp: 'Mon, 25 Jul 2016 16:36:07 GMT')
+    headers = result.headers
+```
+
+To run the sample, make sure that you have
+
+- Updateded the API_KEY and API_SECRET in [example.rb](samples/ruby/example.rb) to your API key and secret
+
+Then call from your shell:
+
+```bash
+    cd samples/ruby
+    bundle install
+    rake run
+```
