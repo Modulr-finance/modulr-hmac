@@ -17,6 +17,7 @@ Samples directory contain sample code for the following languages:
 - [Python](#python)
 - [Ruby](#ruby)
 - [C](#c)
+- [C++](#cpp)
 ---
 
 ### Java
@@ -270,6 +271,34 @@ To compile and run the sample:
 
 ```bash
     gcc -o sample sample.c ModulrApiAuth.c -lcrypto -lssl -lcurl
+    ./sample
+```
+
+#### Libraries
+
+You will need to install the following libraries
+
+- OpenSSL
+- Libcurl
+
+To install these in Ubuntu, for example:
+
+```bash
+    sudo apt install libssl-dev
+    sudo apt install libcurl4-openssl-dev
+```
+
+---
+
+
+### C++
+
+#### [sample.c](samples/cpp/sample.cpp)
+
+To compile and run the sample:
+
+```bash
+    g++ -o sample sample.cpp ModulrApiAuth.cpp -lcrypto -lssl -lcurl
     ./sample
 ```
 
