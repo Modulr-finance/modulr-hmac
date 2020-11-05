@@ -293,7 +293,7 @@ To install these in Ubuntu, for example:
 
 ### C++
 
-#### [sample.c](samples/cpp/sample.cpp)
+#### [sample.cpp](samples/cpp/sample.cpp)
 
 To compile and run the sample:
 
