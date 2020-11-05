@@ -16,6 +16,7 @@ Samples directory contain sample code for the following languages:
 - [Postman](#postman-pre-request-script)
 - [Python](#python)
 - [Ruby](#ruby)
+- [C](#c)
 - [C++](#cpp)
 ---
 
@@ -261,6 +262,34 @@ Then call from your shell:
 ```
 
 ---
+
+### C
+
+#### [sample.c](samples/c/sample.c)
+
+To compile and run the sample:
+
+```bash
+    gcc -o sample sample.c ModulrApiAuth.c -lcrypto -lssl -lcurl
+    ./sample
+```
+
+#### Libraries
+
+You will need to install the following libraries
+
+- OpenSSL
+- Libcurl
+
+To install these in Ubuntu, for example:
+
+```bash
+    sudo apt install libssl-dev
+    sudo apt install libcurl4-openssl-dev
+```
+
+---
+
 
 ### C++
 
