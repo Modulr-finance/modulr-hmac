@@ -9,8 +9,7 @@ import (
 )
 
 func TestGenerateReturnsAnHMACString(t *testing.T) {
-	signature, _ := generate("57502612d1bb2c0001000025276a506e125f464f89132e7ca1773987", "YTUzODc3N2FiODEyNDdiMWE3ZGUwMDU1NDZmNmNmMzA=", "")
-	fmt.Print("\n" + signature)
+	signature, _ := generate("api_key", "api_secret", "")
 	expectedSignature := "Signature keyId=\"api_key\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\""
 	assert.Equal(t, expectedSignature, signature[0:86], "generate should return the hmac signature")
 }
@@ -65,7 +64,7 @@ func TestGenerateAcceptsANonce(t *testing.T) {
 	signature, _ := generate("api_key", "api_secret", "nonce")
 	actualValue := signature[86:116]
 
-	expected := "GDiVOYxYOn6n7MVcAzREF_Nv-Kw%3D"
+	expected := "dUIUO_JZUOSjsEhEBb_QoedvHic%3D"
 	assert.Equal(t, expected, actualValue, "HMAC signature must contain the signature")
 }
 
