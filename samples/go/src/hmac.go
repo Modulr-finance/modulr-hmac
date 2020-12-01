@@ -4,7 +4,6 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/base64"
-	"fmt"
 	"github.com/google/uuid"
 	"net/url"
 	"time"
@@ -19,6 +18,8 @@ const (
 	DateFormat      = "Mon, 02 Jan 2006 15:04:05 GMT"
 	Date 			= "date: "
 	Nonce = "\nx-mod-nonce: "
+	KeyIdPrefix = "Signature keyId=\""
+	EmptyString = ""
 )
 
 var dateNow = time.Now
@@ -37,7 +38,7 @@ func buildSignature(apiKey string, apiSecret string, nonce string) (string, *Sig
 }
 
 func buildKeyId(apiKey string) string {
-	return "Signature keyId=\"" + apiKey + "\","
+	return KeyIdPrefix + apiKey + "\","
 }
 
 func generateEncodedSignature(apiSecret string, nonce string) string {
@@ -45,7 +46,6 @@ func generateEncodedSignature(apiSecret string, nonce string) string {
 	mac := hmac.New(sha1.New, []byte(apiSecret))
 
 	plainSig := retrieveDate() + buildNonce(nonce)
-	fmt.Print("plainSig[" + plainSig + "]")
 	mac.Write([]byte(plainSig))
 	encodedMac := mac.Sum(nil)
 	base64Encoded := base64.URLEncoding.EncodeToString(encodedMac)
@@ -59,9 +59,8 @@ func retrieveDate() string {
 }
 
 func buildNonce(nonce string) string {
-	if nonce == "" {
+	if nonce == EmptyString {
 		nonce = uuid.New().String()
 	}
-	fmt.Print("nonce [" + nonce + "]")
 	return Nonce + nonce
 }
