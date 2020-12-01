@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -54,7 +53,6 @@ func TestGenerateReturnsSignatureWithSignatureValue(t *testing.T) {
 
 func TestGenerateReturnsHashedSignature(t *testing.T) {
 	signature, _ := generate("api_key", "api_secret", "")
-	fmt.Print(signature)
 	actualValue := signature[86:117]
 	assert.True(t, actualValue != "", "Encoded HMAC signature should be present")
 }
