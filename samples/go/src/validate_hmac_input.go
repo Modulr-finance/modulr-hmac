@@ -1,16 +1,16 @@
 package main
 
-type SignatureError struct {
+type ValidationError struct {
 	Message string
 }
 
-func validateInput (apiKey string, apiSecret string) *SignatureError {
+func validateInput (apiKey string, apiSecret string) *ValidationError {
 	if apiKey == "" {
-		return &SignatureError{ "api_key cannot be empty" }
+		return &ValidationError{"api_key cannot be empty" }
 	}
 
 	if apiSecret == "" {
-		return &SignatureError{ "api_secret cannot be empty" }
+		return &ValidationError{"api_secret cannot be empty" }
 	}
 
 	return nil
