@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	ErrorResponse   = ""
 	Algorithm       = "algorithm=\"hmac-sha1\","
 	Headers         = "headers=\"date x-mod-nonce\","
 	SignaturePrefix = "signature=\""
@@ -24,13 +23,21 @@ const (
 
 var dateNow = time.Now
 
-func generate(apiKey string, apiSecret string, nonce string) (string, *SignatureError) {
+func generate(apiKey string, apiSecret string, nonce string) (map[string] string, *SignatureError) {
 	validationError := validateInput(apiKey, apiSecret)
+	headers := make(map[string] string)
 	if validationError != nil {
-		return ErrorResponse, validationError
+		return nil, validationError
+	}
+	signature, err := buildSignature(apiKey, apiSecret, nonce)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return buildSignature(apiKey, apiSecret, nonce)
+	headers["Authorization"] = signature
+
+	return headers, nil
 }
 
 func buildSignature(apiKey string, apiSecret string, nonce string) (string, *SignatureError) {
