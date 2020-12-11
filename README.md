@@ -164,9 +164,9 @@ file into the text area
 
 Finally, create a new set of headers in the Headers tab in Postman:
 ```
-Authorization | {{authorization}}
-x-mod-nonce | {{nonce}}
-Date | {{date}} 
+Authorization:{{authorization}}
+x-mod-nonce:{{nonce}}
+Date:{{date}} 
 ```
 they should look something like this:
 
