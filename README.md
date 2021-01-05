@@ -18,6 +18,7 @@ Samples directory contain sample code for the following languages:
 - [Ruby](#ruby)
 - [C](#c)
 - [C++](#cpp)
+- [C\#](#c\#)
 ---
 
 ### Java
@@ -36,7 +37,7 @@ To use this class instantiate it using your API key and secret.
 ```java
     ModulrApiAuth modulrAuth = new ModulrApiAuth("KNOWN-TOKEN", "SECRET-TOKEN");
 ```
-
+``
 Then use one of the generateXXX methods to get a map of headers with the header name as the key.
 
 ```java
@@ -315,3 +316,35 @@ To install these in Ubuntu, for example:
     sudo apt install libssl-dev
     sudo apt install libcurl4-openssl-dev
 ```
+
+---
+
+### C\#
+
+Note: These examples were written for .NET Core, but should be easy enough to port to .NET Framework.
+
+#### [AuthHelper.cs](samples/c\#/src/AuthHelper.cs)
+
+This class is a helper that can generate the required headers for a given API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+- x-mod-retry
+
+To use this class instantiate it using your API key and secret.
+
+```csharp
+    AuthHelper authHelper = new AuthHelper("YOUR_API_KEY", "YOUR_API_SECRET");
+```
+
+Replacing `"NONCE"` with the correct nonce to be used, call one of the `GetHeaders` methods to get a dictionary of headers, with the header name as the key. 
+
+```csharp
+    Dictionary<string, string> headers = authHelper.GetHeaders("NONCE");
+```
+
+#### [Program.cs](samples/c\#/src/Program.cs)
+
+This class gives a working example of how to use the `AuthHelper` class.
+To run, replace the API key and secret with your values and then use `dotnet run` or your prefered IDE.
