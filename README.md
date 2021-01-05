@@ -18,7 +18,7 @@ Samples directory contain sample code for the following languages:
 - [Ruby](#ruby)
 - [C](#c)
 - [C++](#cpp)
-- [C\#](#c\#)
+- [C\#](#c-2)
 ---
 
 ### Java
