@@ -1,9 +1,13 @@
 **.idea/
 .gradle/
+.vscode/
 **out/
 samples/java/.classpath
 samples/java/.project
 samples/java/.settings/
 samples/java/bin/
+samples/java/build/
 samples/kotlin/build/
 **__pycache__
+samples/c#/**/bin/
+samples/c#/**/obj/
