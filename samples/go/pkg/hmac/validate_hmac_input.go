@@ -1,4 +1,4 @@
-package main
+package hmac
 
 type ValidationError struct {
 	Message string
