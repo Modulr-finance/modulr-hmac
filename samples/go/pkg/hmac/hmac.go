@@ -1,7 +1,7 @@
-package main
+package hmac
 
 import (
-	"github.com/Modulr-finance/modulr-hmac/src/signature"
+	"github.com/Modulr-finance/modulr-hmac/pkg/hmac/signature"
 	"github.com/google/uuid"
 	"time"
 )
@@ -16,7 +16,7 @@ const (
 
 var dateNow = time.Now
 
-func generate(apiKey string, apiSecret string, nonce string) (map[string] string, *ValidationError) {
+func GenerateHeaders(apiKey string, apiSecret string, nonce string) (map[string] string, *ValidationError) {
 	validationError := validateInput(apiKey, apiSecret)
 
 	if validationError != nil {

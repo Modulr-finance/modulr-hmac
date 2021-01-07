@@ -1,8 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/Modulr-finance/modulr-hmac/pkg/hmac"
+)
 
 func main() {
-	fmt.Println()
+	headers, _ := hmac.GenerateHeaders("api_key", "api_secret", "")
 
+	for key, element := range headers {
+		fmt.Println(key, ":", element)
+	}
 }
