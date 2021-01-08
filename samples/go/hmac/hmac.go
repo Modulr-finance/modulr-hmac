@@ -1,7 +1,7 @@
 package hmac
 
 import (
-	"github.com/Modulr-finance/modulr-hmac/pkg/hmac/signature"
+	"github.com/Modulr-finance/modulr-hmac/hmac/signature"
 	"github.com/google/uuid"
 	"time"
 )
@@ -27,10 +27,10 @@ func GenerateHeaders(apiKey string, apiSecret string, nonce string) (map[string]
 
 func buildHeaders(apiKey string, apiSecret string, nonce string) map[string] string {
 	headers := make(map[string] string)
-	date := dateNow()
+	date := dateNow().Format(time.RFC1123)
 	nonce = generateNonceIfEmpty(nonce)
 
-	headers[DateHeader] = date.Format(DateFormat)
+	headers[DateHeader] = date
 	headers[AuthorizationHeader] = signature.Build(apiKey, apiSecret, nonce, date)
 	headers[NonceHeader] = nonce
 	return headers

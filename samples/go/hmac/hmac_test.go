@@ -15,7 +15,7 @@ func TestGenerateReturnsAnHMACString(t *testing.T) {
 func TestGenerateReturnsADateHeader(t *testing.T) {
 	injectMockDate()
 	headers, _ := GenerateHeaders("api_key", "api_secret", "")
-	expectedDate := "2020-01-02"
+	expectedDate := "Thu, 02 Jan 2020 15:04:05 GMT"
 	assert.Equal(t, expectedDate, headers["Date"])
 }
 

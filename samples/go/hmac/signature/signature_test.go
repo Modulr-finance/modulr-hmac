@@ -44,13 +44,13 @@ func TestGenerateReturnsHashedSignature(t *testing.T) {
 func TestGenerateAcceptsANonce(t *testing.T) {
 	signature := Build("api_key", "api_secret", "nonce", date())
 	actualValue := signature[86:116]
-	expected := "YPK-16yaBxuZuciYLGoxS30QBgI%3D"
+	expected := "9V8gi5Mp9MsL%2FO7mV6qZlBM9%2FR"
 	assert.Equal(t, expected, actualValue, "HMAC signature must contain the signature")
 }
 
 
-func date() time.Time {
+func date() string {
 	now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 GMT")
-	return now
+	return now.String()
 }
 
