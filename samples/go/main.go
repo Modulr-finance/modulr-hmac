@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	headers, _ := hmac.GenerateHeaders("api-key", "api-secret", "")
+	headers, _ := hmac.GenerateHeaders("api-key", "api-secret", "", false)
 
 	for key, element := range headers {
 		fmt.Println(key, ":", element)
