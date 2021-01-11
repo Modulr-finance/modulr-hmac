@@ -12,8 +12,8 @@ const (
 	EmptyString         = ""
 	NonceHeader         = "x-mod-nonce"
 	Retry               = "x-mod-retry"
-	RetryTrue			= "true"
-	RetryFalse			= "false"
+	RetryTrue           = "true"
+	RetryFalse          = "false"
 )
 
 var dateNow = time.Now
