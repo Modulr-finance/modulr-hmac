@@ -13,7 +13,8 @@ const (
 	Headers         = "headers=\"date x-mod-nonce\","
 	SignaturePrefix = "signature=\""
 	SignatureSuffix = "\""
-	Nonce           = "\nx-mod-nonce: "
+	Newline 		= "\n"
+	Nonce           = "x-mod-nonce: "
 	KeyIdPrefix     = "Signature keyId=\""
 )
 
@@ -26,7 +27,7 @@ func buildKeyId(apiKey string) string {
 }
 
 func generateEncodedSignature(apiSecret string, nonce string, date string) string {
-	encodedSig := encodeSignature(DatePrefix + date + Nonce + nonce, apiSecret)
+	encodedSig := encodeSignature(DatePrefix + date + Newline + Nonce + nonce, apiSecret)
 	return SignaturePrefix + encodedSig + SignatureSuffix
 }
 
