@@ -41,8 +41,8 @@ func TestGenerateReturnsAGeneratedNonceHeaderIfNonceIsEmpty(t *testing.T) {
 }
 
 func TestGenerateThrowsErrorIfApiKeyIsNull(t *testing.T) {
-	 _, err := GenerateHeaders("", "api_secret", "", false)
-	 assert.Equal(t, "api_key cannot be empty", err.Message)
+	_, err := GenerateHeaders("", "api_secret", "", false)
+	assert.Equal(t, "api_key cannot be empty", err.Message)
 }
 
 func TestGenerateThrowsErrorIfApiSecretIsNull(t *testing.T) {

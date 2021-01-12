@@ -48,9 +48,7 @@ func TestGenerateAcceptsANonce(t *testing.T) {
 	assert.Equal(t, expected, actualValue, "HMAC signature must contain the signature")
 }
 
-
 func date() string {
 	now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 GMT")
 	return now.String()
 }
-
