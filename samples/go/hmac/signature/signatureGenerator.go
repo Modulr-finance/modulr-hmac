@@ -13,7 +13,7 @@ const (
 	Headers         = "headers=\"date x-mod-nonce\","
 	SignaturePrefix = "signature=\""
 	SignatureSuffix = "\""
-	Newline 		= "\n"
+	Newline         = "\n"
 	Nonce           = "x-mod-nonce: "
 	KeyIdPrefix     = "Signature keyId=\""
 )
