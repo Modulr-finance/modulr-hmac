@@ -19,6 +19,7 @@ Samples directory contain sample code for the following languages:
 - [C](#c)
 - [C++](#cpp)
 - [C\#](#c-2)
+- [Golang](#golang)
 ---
 
 ### Java
@@ -348,3 +349,28 @@ Replacing `"NONCE"` with the correct nonce to be used, call one of the `GetHeade
 
 This class gives a working example of how to use the `AuthHelper` class.
 To run, replace the API key and secret with your values and then use `dotnet run` or your prefered IDE.
+
+### Golang
+
+#### [hmac.go](samples/go/hmac/hmac.go)
+
+This file generates the required headers outlined below for a given API key and secret
+
+- Authorization
+- Date
+- x-mod-nonce
+- x-mod-retry
+
+To use this function, invoke it using your API key and secret. There's an example of this in [main.go](samples/go/main.go)
+
+```golang
+    headers, error := hmac.GenerateHeaders("API_KEY", "API_SECRET", "OPTIONAL_NONCE", false)
+```
+
+If successful, this will generate a standard map with the keys being the headers mentioned previously
+
+```golang
+    for key, element := range headers {
+        fmt.Println(key, ":", element)
+    }
+```
