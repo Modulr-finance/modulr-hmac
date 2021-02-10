@@ -11,6 +11,7 @@ Please note the samples are designed to be self contained to demonstrate hmac si
 Samples directory contain sample code for the following languages:
 
 - [Java](#java)
+- [Scala](#scala)
 - [Kotlin](#kotlin)
 - [NodeJS](#nodejs)
 - [Postman](#postman-pre-request-script)
@@ -58,6 +59,37 @@ OR
 #### [com.modulr.hmac.Hmac.java](samples/java/src/main/java/com/modulr/hmac/Hmac.java)
 
 This class demonstrates how to use the ModulrApiAuth class.
+
+---
+
+### Scala
+
+#### [Signature.scala](samples/scala/src/main/scala/Signature.scala)
+
+This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
+
+- Authorization
+- Date
+- x-mod-nonce
+
+You can start by creating an instance of Signature class
+```scala
+  val signature: Signature = new Signature("key", "secret")
+```
+Then you can get your Auth headers by simply calling `.buildHeaders()`. In that case a nonce will be a random UUID and Date will default to current
+```scala
+  val headersDefault: Map[String, String] = signature.buildHeaders() 
+```
+OR with custom nonce
+```scala
+  val headersCustomNonce: Map[String, String] = signature.buildHeaders("nonceValue")
+```
+OR with both custom nonce and custom date 
+```scala
+  val headersCustomAll: Map[String, String] = signature.buildHeaders("nonceValue", Calendar.getInstance().getTime)
+```
+
+You can see all of it in action in [Main.scala](samples/scala/src/main/scala/Main.scala) class example
 
 ---
 
