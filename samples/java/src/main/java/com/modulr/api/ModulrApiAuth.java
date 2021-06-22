@@ -16,21 +16,20 @@ public class ModulrApiAuth {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
     private static final String DATE_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
     private final String secret;
-    private final String token;
+    private final String apiKey;
     private Date date;
     private Supplier<Date> dateSupplier;
-
     private String lastUsedNonce;
 
 
-    public ModulrApiAuth(String token, String secret) {
-        this(token, secret, Date::new);
+    public ModulrApiAuth(String apiKey, String secret) {
+        this(apiKey, secret, Date::new);
     }
 
-    public ModulrApiAuth(String token, String secret, Supplier<Date> dateSupplier) {
-        this.token = (token != null) ? token.trim() : null;
-        this.secret = secret.trim();
-        this.dateSupplier = dateSupplier;
+    public ModulrApiAuth(String apiKey, String secret, Supplier<Date> dateSupplier) {
+        this.apiKey = setApiKey(apiKey);
+        this.secret = setSecret(secret);
+        this.dateSupplier = setDateSupplier(dateSupplier);
     }
 
     public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
@@ -41,22 +40,7 @@ public class ModulrApiAuth {
         return buildHeaders(this.lastUsedNonce, true);
     }
 
-    private Map<String, String> buildHeaders(String nonce, Boolean retry) throws SignatureException {
-        final Map<String, String> headerParams = new HashMap<>();
-        String hmac = generateHmac(nonce);
-
-        headerParams.put("Authorization", formatAuthHeader(this.token, hmac));
-        headerParams.put("Date", getFormattedDate(this.getDate()));
-        headerParams.put("x-mod-nonce", nonce);
-        headerParams.put("x-mod-retry", String.valueOf(retry));
-
-        this.lastUsedNonce = nonce;
-
-        return headerParams;
-    }
-
     public String generateHmac(String nonce) throws SignatureException {
-        validateFields();
         this.date = dateSupplier.get();
         String data = String.format("date: %s\nx-mod-nonce: %s", getFormattedDate(this.getDate()), nonce);
         return calculateHmac(data);
@@ -66,16 +50,22 @@ public class ModulrApiAuth {
         return date;
     }
 
-    public String getSecret() {
-        return secret;
+    private Map<String, String> buildHeaders(String nonce, Boolean retry) throws SignatureException {
+        final Map<String, String> headerParams = new HashMap<>();
+        String hmac = generateHmac(nonce);
+
+        headerParams.put("Authorization", formatAuthHeader(this.apiKey, hmac));
+        headerParams.put("Date", getFormattedDate(this.getDate()));
+        headerParams.put("x-mod-nonce", nonce);
+        headerParams.put("x-mod-retry", String.valueOf(retry));
+
+        this.lastUsedNonce = nonce;
+
+        return headerParams;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    private String formatAuthHeader(String token, String signature) {
-        return String.format("Signature keyId=\"%s\",algorithm=\"%s\",headers=\"date x-mod-nonce\",signature=\"%s\"", token, "hmac-sha1", signature);
+    private String formatAuthHeader(String apiKey, String signature) {
+        return String.format("Signature keyId=\"%s\",algorithm=\"%s\",headers=\"date x-mod-nonce\",signature=\"%s\"", apiKey, "hmac-sha1", signature);
     }
 
     private String calculateHmac(final String content) throws SignatureException {
@@ -101,13 +91,25 @@ public class ModulrApiAuth {
         return sdf.format(date);
     }
 
-    private void validateFields() {
-        if (this.secret == null) {
-            throw new IllegalStateException("Secret required for Modulr API Auth");
-        }
-        if (this.dateSupplier == null) {
+    private Supplier<Date> setDateSupplier(Supplier<Date> dateSupplier) {
+        if (dateSupplier == null) {
             throw new IllegalStateException("A date supplier is required for Modulr API Auth");
         }
+        return dateSupplier;
+    }
+
+    private String setSecret(String secret){
+        if (secret == null) {
+            throw new IllegalStateException("Secret required for Modulr API Auth");
+        }
+        return secret.trim();
+    }
+
+    private String setApiKey(String apiKey){
+        if (apiKey == null){
+            return null;
+        }
+        return apiKey.trim();
     }
 
 }
