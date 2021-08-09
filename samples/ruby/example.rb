@@ -25,7 +25,7 @@ Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
   res = http.request(req)
 end
 
-if res.code != 200
+if res.code != "200"
     puts "Unsuccessful API call, code: #{res.code}, body: #{res.body}"
 else
     puts res.body
