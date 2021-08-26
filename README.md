@@ -356,7 +356,7 @@ To install these in Ubuntu, for example:
 
 Note: These examples were written for .NET Core, but should be easy enough to port to .NET Framework.
 
-#### [AuthHelper.cs](samples/c\#/src/AuthHelper.cs)
+#### [AuthHelper.cs](samples/c%23/TestAPIClient/src/AuthHelper.cs)
 
 This class is a helper that can generate the required headers for a given API key and secret. It generates the following headers:
 
