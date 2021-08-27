@@ -356,7 +356,7 @@ To install these in Ubuntu, for example:
 
 Note: These examples were written for .NET Core, but should be easy enough to port to .NET Framework.
 
-#### [AuthHelper.cs](samples/c\#/src/AuthHelper.cs)
+#### [AuthHelper.cs](samples/c%23/TestAPIClient/src/AuthHelper.cs)
 
 This class is a helper that can generate the required headers for a given API key and secret. It generates the following headers:
 
@@ -377,7 +377,7 @@ Replacing `"NONCE"` with the correct nonce to be used, call one of the `GetHeade
     Dictionary<string, string> headers = authHelper.GetHeaders("NONCE");
 ```
 
-#### [Program.cs](samples/c\#/src/Program.cs)
+#### [Program.cs](samples/c%23/TestAPIClient/src/Program.cs)
 
 This class gives a working example of how to use the `AuthHelper` class.
 To run, replace the API key and secret with your values and then use `dotnet run` or your prefered IDE.
