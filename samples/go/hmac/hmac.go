@@ -1,9 +1,11 @@
 package hmac
 
 import (
+	"strings"
+	"time"
+
 	"github.com/Modulr-finance/modulr-hmac/hmac/signature"
 	"github.com/google/uuid"
-	"time"
 )
 
 const (
@@ -29,7 +31,15 @@ func GenerateHeaders(apiKey string, apiSecret string, nonce string, hasRetry boo
 
 func constructHeadersMap(apiKey string, apiSecret string, nonce string, hasRetry bool) map[string]string {
 	headers := make(map[string]string)
-	date := dateNow().Format(time.RFC1123)
+
+	// date should be sent UTC/GMT as per the docs https://modulr.readme.io/docs/authentication under section "System time"
+	var date string
+	if strings.EqualFold(dateNow().Location().String(), "GMT") {
+		date = dateNow().Format(time.RFC1123)
+	} else {
+		date = dateNow().UTC().Format(time.RFC1123)
+	}
+
 	nonce = generateNonceIfEmpty(nonce)
 
 	headers[DateHeader] = date
