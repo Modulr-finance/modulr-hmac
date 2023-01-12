@@ -12,10 +12,17 @@ func TestGenerateReturnsAnHMACString(t *testing.T) {
 	assert.Equal(t, expectedSignature, headers["Authorization"][0:86], "generate should return the hmac headers")
 }
 
-func TestGenerateReturnsADateHeader(t *testing.T) {
-	injectMockDate()
+func TestGenerateReturnsADateHeaderUTC(t *testing.T) {
+	injectMockUTCDate()
 	headers, _ := GenerateHeaders("api_key", "api_secret", "", false)
 	expectedDate := "Thu, 02 Jan 2020 15:04:05 GMT"
+	assert.Equal(t, expectedDate, headers["Date"])
+}
+
+func TestGenerateReturnsADateHeaderNonUTC(t *testing.T) {
+	injectMockNonUTCDate()
+	headers, _ := GenerateHeaders("api_key", "api_secret", "", false)
+	expectedDate := "Thu, 02 Jan 2020 14:04:05 GMT"
 	assert.Equal(t, expectedDate, headers["Date"])
 }
 
@@ -50,9 +57,16 @@ func TestGenerateThrowsErrorIfApiSecretIsNull(t *testing.T) {
 	assert.Equal(t, "api_secret cannot be empty", err.Message)
 }
 
-func injectMockDate() {
+func injectMockUTCDate() {
 	dateNow = func() time.Time {
 		now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 GMT")
+		return now
+	}
+}
+
+func injectMockNonUTCDate() {
+	dateNow = func() time.Time {
+		now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 CET")
 		return now
 	}
 }
