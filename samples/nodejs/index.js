@@ -18,7 +18,7 @@ async function getCustomers(){
 
         if (response.ok) {
             console.log('OK response from API, body: ', jsonBody);
-        }else {
+        } else {
             console.error('Unsuccessful API call, code: ', response.status,  ', body: ', jsonBody);
         }
     }catch(error){
