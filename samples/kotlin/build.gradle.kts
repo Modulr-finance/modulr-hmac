@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.apache.httpcomponents:httpclient:4.5.6")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     testImplementation("junit:junit:4.12")
