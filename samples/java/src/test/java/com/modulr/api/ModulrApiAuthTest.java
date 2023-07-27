@@ -1,8 +1,8 @@
 package com.modulr.api;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.security.SignatureException;
@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.Map;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
@@ -29,6 +28,9 @@ public class ModulrApiAuthTest {
     private static final String HMAC_SECRET = "NzAwZmIwMGQ0YTJiNDhkMzZjYzc3YjQ5OGQyYWMzOTI=";
     private static final String NONCE = "28154b2-9c62b93cc22a-24c9e2-5536d7d";
     private static final String EXPECTED_HMAC_SIGNATURE = "WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D";
+
+    @Mock
+    Supplier<Date> dateSupplier;
 
     private ModulrApiAuth underTest;
 
@@ -77,8 +79,6 @@ public class ModulrApiAuthTest {
 
     @Test
     public void testHmacGeneratorWithDatSupplier() throws SignatureException {
-
-        Supplier<Date> dateSupplier = (Supplier<Date>) mock(Supplier.class);
 
         LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
         ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
