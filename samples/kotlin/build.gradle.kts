@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.10"
 }
 
 group = "com.modulr"
@@ -15,6 +15,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
