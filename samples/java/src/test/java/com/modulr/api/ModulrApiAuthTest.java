@@ -23,11 +23,11 @@ import static org.junit.Assert.*;
 public class ModulrApiAuthTest {
 
     /* Test Data*/
-    private static final String DATE_STR = "2016-07-25T16:36:07";
+    private static final String DATE_STR = "2016-09-25T16:36:07";
     private static final String API_TOKEN = "KNOWN-TOKEN";
     private static final String HMAC_SECRET = "NzAwZmIwMGQ0YTJiNDhkMzZjYzc3YjQ5OGQyYWMzOTI=";
     private static final String NONCE = "28154b2-9c62b93cc22a-24c9e2-5536d7d";
-    private static final String EXPECTED_HMAC_SIGNATURE = "WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D";
+    private static final String EXPECTED_HMAC_SIGNATURE = "z1X8UZJq9jwLPi9peycdHfy3SIY%3D";
 
     @Mock
     Supplier<Date> dateSupplier;
