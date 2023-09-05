@@ -29,16 +29,16 @@ class SignatureTest {
 
     @Test
     fun testHmacGenerationWithKnownNonceAndDate() {
-        val result = signature.calculate("28154b2-9c62b93cc22a-24c9e2-5536d7d", toDate("2016-07-25T16:36:07"))
+        val result = signature.calculate("28154b2-9c62b93cc22a-24c9e2-5536d7d", toDate("2016-09-25T16:36:07"))
 
         assertEquals("28154b2-9c62b93cc22a-24c9e2-5536d7d", result.nonce)
-        assertEquals("WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D", result.signature)
-        assertEquals("Mon, 25 Jul 2016 16:36:07 GMT", result.timestamp)
+        assertEquals("z1X8UZJq9jwLPi9peycdHfy3SIY%3D", result.signature)
+        assertEquals("Sun, 25 Sep 2016 16:36:07 GMT", result.timestamp)
 
         val headers = result.headers
 
-        assertEquals("Signature keyId=\"${API_KEY}\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"WBMr%2FYdhysbmiIEkdTrf2hP7SfA%3D\"", headers["Authorization"])
-        assertEquals("Mon, 25 Jul 2016 16:36:07 GMT", headers["Date"])
+        assertEquals("Signature keyId=\"${API_KEY}\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"z1X8UZJq9jwLPi9peycdHfy3SIY%3D\"", headers["Authorization"])
+        assertEquals("Sun, 25 Sep 2016 16:36:07 GMT", headers["Date"])
         assertEquals("28154b2-9c62b93cc22a-24c9e2-5536d7d", headers["x-mod-nonce"])
     }
 

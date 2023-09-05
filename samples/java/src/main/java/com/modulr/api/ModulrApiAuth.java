@@ -96,7 +96,7 @@ public class ModulrApiAuth {
     }
 
     private String getFormattedDate(Date date) {
-        DateFormat sdf = new SimpleDateFormat(DATE_PATTERN,Locale.UK);
+        DateFormat sdf = new SimpleDateFormat(DATE_PATTERN,Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         return sdf.format(date);
     }

@@ -44,7 +44,7 @@ class Signature(
         private const val HMAC_SHA1_ALGORITHM = "HmacSHA1"
 
         private fun formatDate(date: Date): String {
-            val sdf = SimpleDateFormat(DATE_PATTERN, Locale.UK)
+            val sdf = SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH)
             sdf.timeZone = TimeZone.getTimeZone("GMT")
             return sdf.format(date)
         }
