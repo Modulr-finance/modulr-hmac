@@ -1,110 +1,61 @@
 package com.modulr.api;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.security.SignatureException;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Map;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import java.time.format.DateTimeFormatter;
-import java.util.function.Supplier;
 
+import com.modulr.api.ModulrApiAuth.HmacAlgorithm;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ModulrApiAuthTest {
+class ModulrApiAuthTest {
 
-    /* Test Data*/
-    private static final String DATE_STR = "2016-09-25T16:36:07";
     private static final String API_TOKEN = "KNOWN-TOKEN";
     private static final String HMAC_SECRET = "NzAwZmIwMGQ0YTJiNDhkMzZjYzc3YjQ5OGQyYWMzOTI=";
-    private static final String NONCE = "28154b2-9c62b93cc22a-24c9e2-5536d7d";
-    private static final String EXPECTED_HMAC_SIGNATURE = "z1X8UZJq9jwLPi9peycdHfy3SIY%3D";
-
-    @Mock
-    Supplier<Date> dateSupplier;
-
-    private ModulrApiAuth underTest;
 
     @Test
-    public void testHmacGeneratorWithNonNullToken() throws SignatureException {
-        underTest = spy(new ModulrApiAuth(API_TOKEN, HMAC_SECRET));
+    void shouldReturnHeadersWithValidSignatureAndNoRetryWhenReplayNotSet() throws SignatureException {
+        LocalDateTime dateTime = LocalDateTime.parse("2016-09-25T16:36:07");
+        Clock clock = Clock.fixed(dateTime.atZone(ZoneId.of("UTC")).toInstant(), ZoneId.of("UTC"));
 
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+        ModulrApiAuth underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, clock, HmacAlgorithm.SHA1);
 
-        Date date = Date.from(utcDateTime.toInstant());
-
-        /* Generate headers and assert they are as expected */
-        when(underTest.getDate()).thenReturn(date);
-        Map<String, String> headers = underTest.generateApiAuthHeaders(NONCE);
-        assertEquals(headers.size(), 4);
-        assertEquals(NONCE, headers.get("x-mod-nonce"));
-        assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.format(utcDateTime), headers.get("Date"));
-        assertEquals("false", headers.get("x-mod-retry"));
-        assertEquals("Signature keyId=\""+ API_TOKEN+ "\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"" + EXPECTED_HMAC_SIGNATURE + "\"", headers.get("Authorization"));
-
-        /* Generate retry headers and assert they are as expected
-         * x-mod-retry should be true
-         * Date should not be same as previous
-         * Nonce should be same as previous
-         * Signature will be different because the date has changed */
-        when(underTest.getDate()).thenCallRealMethod();
-        Map<String, String> headersWithRetryOn = underTest.generateRetryApiAuthHeaders();
-        assertEquals("true", headersWithRetryOn.get("x-mod-retry"));
-        assertEquals(headers.get("x-mod-nonce"), headersWithRetryOn.get("x-mod-nonce"));
-        assertNotEquals(headers.get("Date"), headersWithRetryOn.get("Date"));
-        assertNotEquals(headers.get("Authorization"), headersWithRetryOn.get("Authorization"));
+        Map<String, String> result = underTest.generateApiAuthHeaders("28154b2-9c62b93cc22a-24c9e2-5536d7d");
+        assertEquals(4, result.size());
+        assertEquals("28154b2-9c62b93cc22a-24c9e2-5536d7d", result.get("x-mod-nonce"));
+        assertEquals("Sun, 25 Sep 2016 16:36:07 GMT", result.get("Date"));
+        assertEquals("false", result.get("x-mod-retry"));
+        assertEquals("Signature keyId=\"" + API_TOKEN + "\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"z1X8UZJq9jwLPi9peycdHfy3SIY%3D\"", result.get("Authorization"));
     }
 
     @Test
-    public void testHmacGeneratorWithNullToken() throws SignatureException {
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+    void shouldReturnHeadersWithValidSignatureAndRetryWhenReplaySet() throws SignatureException {
+        LocalDateTime dateTime = LocalDateTime.parse("2025-08-15T10:30:00");
+        Clock clock = Clock.fixed(dateTime.atZone(ZoneId.of("America/New_York")).toInstant(), ZoneId.of("America/New_York"));
 
-        Date date = Date.from(utcDateTime.toInstant());
-        underTest = spy(new ModulrApiAuth(null, HMAC_SECRET, () -> date));
+        ModulrApiAuth underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, clock, HmacAlgorithm.SHA256);
 
-        assertEquals(EXPECTED_HMAC_SIGNATURE, underTest.generateHmac(NONCE));
+        String nonce = "abcd-efgh";
+        Map<String, String> result = underTest.generateApiAuthHeaders(nonce, true);
+        assertEquals(4, result.size());
+        assertEquals(nonce, result.get("x-mod-nonce"));
+        assertEquals("Fri, 15 Aug 2025 14:30:00 GMT", result.get("Date"));
+        assertEquals("true", result.get("x-mod-retry"));
+        assertEquals("Signature keyId=\"" + API_TOKEN + "\",algorithm=\"hmac-sha256\",headers=\"date x-mod-nonce\",signature=\"RXqxOPB29c7ezqhYfCe6oeSiHM5xtZDa%2Bxg9PfRWByI%3D\"", result.get("Authorization"));
     }
-
 
     @Test
-    public void testHmacGeneratorWithDatSupplier() throws SignatureException {
+    void shouldReturnHeadersWithValidFormattedDateForSeptember() throws SignatureException {
+        LocalDateTime dateTime = LocalDateTime.parse("2023-09-25T16:36:07");
+        Clock clock = Clock.fixed(dateTime.atZone(ZoneId.of("GMT")).toInstant(), ZoneId.of("GMT"));
 
-        LocalDateTime dateTime = LocalDateTime.parse(DATE_STR);
-        ZonedDateTime utcDateTime = ZonedDateTime.of(dateTime,ZoneId.of("Z"));
+        ModulrApiAuth underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, clock, HmacAlgorithm.SHA512);
 
-        Date date = Date.from(utcDateTime.toInstant());
-        when(dateSupplier.get()).thenReturn(date).thenReturn(new Date());
-
-        underTest = new ModulrApiAuth(API_TOKEN, HMAC_SECRET, dateSupplier);
-
-        /* Generate headers and assert they are as expected */
-        Map<String, String> headers = underTest.generateApiAuthHeaders(NONCE);
-        assertEquals(headers.size(), 4);
-        assertEquals(NONCE, headers.get("x-mod-nonce"));
-        assertEquals(DateTimeFormatter.RFC_1123_DATE_TIME.format(utcDateTime), headers.get("Date"));
-        assertEquals("false", headers.get("x-mod-retry"));
-        assertEquals("Signature keyId=\""+ API_TOKEN+ "\",algorithm=\"hmac-sha1\",headers=\"date x-mod-nonce\",signature=\"" + EXPECTED_HMAC_SIGNATURE + "\"", headers.get("Authorization"));
-
-        /* Generate retry headers and assert they are as expected
-         * x-mod-retry should be true
-         * Date should not be same as previous
-         * Nonce should be same as previous
-         * Signature will be different because the date has changed */
-        Map<String, String> headersWithRetryOn = underTest.generateRetryApiAuthHeaders();
-        assertEquals("true", headersWithRetryOn.get("x-mod-retry"));
-        assertEquals(headers.get("x-mod-nonce"), headersWithRetryOn.get("x-mod-nonce"));
-        assertNotEquals(headers.get("Date"), headersWithRetryOn.get("Date"));
-        assertNotEquals(headers.get("Authorization"), headersWithRetryOn.get("Authorization"));
+        Map<String, String> result = underTest.generateApiAuthHeaders("28154b2-9c62b93cc22a-24c9e2-5536d7d");
+        assertEquals("Mon, 25 Sep 2023 16:36:07 GMT", result.get("Date"));
     }
+
 }
