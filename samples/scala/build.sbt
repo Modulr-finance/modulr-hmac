@@ -1,7 +1,7 @@
-scalaVersion := "2.13.13"
+scalaVersion := "3.3.6"
 
 name := "modulr-hmac-example"
-organization := "ch.epfl.scala"
+organization := "com.modulrfinance"
 version := "1.0"
 
-libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0"
+libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
