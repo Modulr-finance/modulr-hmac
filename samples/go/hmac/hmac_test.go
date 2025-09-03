@@ -59,14 +59,16 @@ func TestGenerateThrowsErrorIfApiSecretIsNull(t *testing.T) {
 
 func injectMockUTCDate() {
 	dateNow = func() time.Time {
-		now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 GMT")
+		location, _ := time.LoadLocation("Europe/London")
+		now, _ := time.ParseInLocation(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 GMT", location)
 		return now
 	}
 }
 
 func injectMockNonUTCDate() {
+	location, _ := time.LoadLocation("Europe/Berlin")
 	dateNow = func() time.Time {
-		now, _ := time.Parse(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 CET")
+		now, _ := time.ParseInLocation(time.RFC1123, "Mon, 02 Jan 2020 15:04:05 CET", location)
 		return now
 	}
 }
