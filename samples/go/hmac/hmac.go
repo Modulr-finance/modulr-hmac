@@ -29,7 +29,7 @@ func GenerateHeaders(apiKey string, apiSecret string, nonce string, hasRetry boo
 
 func constructHeadersMap(apiKey string, apiSecret string, nonce string, hasRetry bool) map[string]string {
 	headers := make(map[string]string)
-	date := dateNow().UTC().Format(time.RFC1123)
+	date := dateNow().In(time.FixedZone("GMT", 0)).Format(time.RFC1123)
 	nonce = generateNonceIfEmpty(nonce)
 
 	headers[DateHeader] = date
