@@ -1,4 +1,4 @@
-package com.modulr.api;
+package com.modulrfinance.api;
 
 import java.security.SignatureException;
 import java.time.Clock;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
 
-import com.modulr.api.ModulrApiAuth.HmacAlgorithm;
+import com.modulrfinance.api.ModulrApiAuth.HmacAlgorithm;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

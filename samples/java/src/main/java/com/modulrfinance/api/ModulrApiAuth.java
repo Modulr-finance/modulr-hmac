@@ -1,4 +1,4 @@
-package com.modulr.api;
+package com.modulrfinance.api;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -34,6 +35,10 @@ public class ModulrApiAuth {
         this.hmacSecret = Optional.ofNullable(hmacSecret).orElseThrow(() -> new IllegalArgumentException("HmacSecret cannot be null"));
         this.clock = Optional.ofNullable(clock).orElseThrow(() -> new IllegalArgumentException("Clock cannot be null"));
         this.hmacAlgorithm = Optional.ofNullable(hmacAlgorithm).orElseThrow(() -> new IllegalArgumentException("HmacAlgorithm cannot be null"));
+    }
+
+    public Map<String, String> generateApiAuthHeaders() throws SignatureException {
+        return generateApiAuthHeaders(UUID.randomUUID().toString());
     }
 
     public Map<String, String> generateApiAuthHeaders(String nonce) throws SignatureException {
