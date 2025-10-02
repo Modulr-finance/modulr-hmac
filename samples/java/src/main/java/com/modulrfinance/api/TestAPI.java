@@ -1,9 +1,8 @@
-package com.modulr.api;
+package com.modulrfinance.api;
 
 import java.io.IOException;
 import java.security.SignatureException;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -32,8 +31,7 @@ public class TestAPI {
 
     public static void main(String[] args) throws SignatureException, IOException, HttpException {
         ModulrApiAuth auth = new ModulrApiAuth(API_KEY_ID, API_KEY_SECRET);
-        String nonce = UUID.randomUUID().toString();
-        Map<String, String> headers = auth.generateApiAuthHeaders(nonce);
+        Map<String, String> headers = auth.generateApiAuthHeaders();
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             ClassicRequestBuilder builder = ClassicRequestBuilder.get().setUri(MODULR_URL);

@@ -18,14 +18,14 @@ Samples directory contain sample code for the following languages:
 - [Python](#python)
 - [Ruby](#ruby)
 - [C](#c)
-- [C++](#cpp)
+- [C++](#c-1)
 - [C\#](#c-2)
 - [Golang](#golang)
 ---
 
 ### Java
 
-#### [com.modulr.api.ModulrApiAuth.java](samples/java/src/main/java/com/modulr/api/ModulrApiAuth.java)
+#### [ModulrApiAuth.java](samples/java/src/main/java/com/modulrfinance/api/ModulrApiAuth.java)
 
 This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
 
@@ -37,26 +37,26 @@ This class is a helper that can generate required headers for a given value of A
 To use this class instantiate it using your API key and secret.
 
 ```java
-    ModulrApiAuth modulrAuth = new ModulrApiAuth("KNOWN-TOKEN", "SECRET-TOKEN");
+    ModulrApiAuth modulrAuth = new ModulrApiAuth("keyId", "keySecret");
 ```
-``
-Then use one of the generateXXX methods to get a map of headers with the header name as the key.
+
+Then use one of the `generateApiAuthHeaders` methods to get a map of headers with the header name as the key.
 
 ```java
-    Map<String, String> headers = modulrAuth.generateApiAuthHeaders("NONCE"); // replace NONCE with correct nonce to be used
+    Map<String, String> headers = modulrAuth.generateApiAuthHeaders();
 
     headers.forEach((key, value) -> System.out.println(key + ": " + value));
 ```
 
-OR
+or
 
 ```java
-    Map<String, String> headers = modulrAuth.generateRetryApiAuthHeaders(); // reuses the nonce used on the last generateApiAuthHeaders call
+    Map<String, String> headers = modulrAuth.generateApiAuthHeaders("nonce", true); // mark a request as being replayed with the nonce from the previous request
 
     headers.forEach((key, value) -> System.out.println(key + ": " + value));
 ```
 
-#### [com.modulr.hmac.Hmac.java](samples/java/src/main/java/com/modulr/hmac/Hmac.java)
+#### [Hmac.java](samples/java/src/main/java/com/modulrfinance/hmac/Hmac.java)
 
 This class demonstrates how to use the ModulrApiAuth class.
 
@@ -64,68 +64,62 @@ This class demonstrates how to use the ModulrApiAuth class.
 
 ### Scala
 
-#### [Signature.scala](samples/scala/src/main/scala/Signature.scala)
+#### [Signature.scala](samples/scala/src/main/scala/com/modulrfinance/api/Signature.scala)
 
 This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
 
 - Authorization
 - Date
 - x-mod-nonce
+- x-mod-retry
 
 You can start by creating an instance of Signature class
 ```scala
-  val signature: Signature = new Signature("key", "secret")
+  val signature: Signature = new Signature("keyId", "keySecret")
 ```
-Then you can get your Auth headers by simply calling `.buildHeaders()`. In that case a nonce will be a random UUID and Date will default to current
+Then you can get your Auth headers by simply calling `.generateApiAuthHeaders()`. In that case a nonce will be a random UUID
 ```scala
-  val headersDefault: Map[String, String] = signature.buildHeaders() 
+  val headersDefault: Map[String, String] = signature.generateApiAuthHeaders() 
 ```
-OR with custom nonce
+or with custom nonce
 ```scala
-  val headersCustomNonce: Map[String, String] = signature.buildHeaders("nonceValue")
-```
-OR with both custom nonce and custom date 
-```scala
-  val headersCustomAll: Map[String, String] = signature.buildHeaders("nonceValue", Calendar.getInstance().getTime)
+  val headersCustomNonce: Map[String, String] = signature.generateApiAuthHeaders("nonceValue")
 ```
 
-You can see all of it in action in [Main.scala](samples/scala/src/main/scala/Main.scala) class example
+You can see all of it in action in [Main.scala](samples/scala/src/main/scala/com/modulrfinance/api/Main.scala) class example
 
 ---
 
 ### Kotlin
 
-#### [com.modulr.api.Signature.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Signature.kt)
+#### [Signature.kt](samples/kotlin/src/main/kotlin/com/modulrfinance/api/Signature.kt)
 
 This class is a helper that can generate required headers for a given value of API key and secret. It generates the following headers:
 
 - Authorization
 - Date
 - x-mod-nonce
+- x-mod-retry
 
 To use this class instantiate it using your API key and secret.
 
 ```kotlin
-    val signature = Singature(API_KEY, API_SECRET)
+    val signature = Signature("keyId", "keySecret")
 ```
 
-Then use the calculate() to get generated headers.
+Then use `generateApiAuthHeaders()` to generated headers.
 
 ```kotlin
-    val result = signature.calculate()
-    val headers = result.headers
+    val headers = signature.generateApiAuthHeaders()
 ```
 
-OR with a specific nonce and date
+or with a specific nonce and replay
 
 ```kotlin
-    val date = Date.from(ZonedDateTime.of(LocalDateTime.parse("2016-07-25T16:36:07"), ZoneId.of("Z")).toInstant())
-
-    val result = signature.calculate("28154b2-9c62b93cc22a-24c9e2-5536d7d", date)
-    val headers = result.headers
+    val headers = signature.generateApiAuthHeaders("28154b2-9c62b93cc22a-24c9e2-5536d7d", true)
 ```
 
-#### [com.modulr.api.Example.kt](samples/kotlin/src/main/kotlin/com/modulr/api/Example.kt)
+#### [Example.kt](samples/kotlin/src/main/kotlin/com/modulrfinance/api/Example.kt)
 
 This object demonstrates how to use the Signature class.
 
@@ -144,10 +138,10 @@ This class can generate required headers for a given value of API key and secret
 To use this class, instantiate it using your API key and secret.
 
 ```javascript
-    const signatureHelper = new signature(API_KEY,API_SECRET);
+    const signatureHelper = new signature("keyId", "keySecret");
 ```
 
-Then use the calculate() to get generated headers.
+Then use `calculate()` to generate headers.
 
 ```javascript
     var result = signatureHelper.calculate();

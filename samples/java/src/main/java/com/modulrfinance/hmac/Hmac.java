@@ -1,6 +1,6 @@
-package com.modulr.hmac;
+package com.modulrfinance.hmac;
 
-import com.modulr.api.ModulrApiAuth;
+import com.modulrfinance.api.ModulrApiAuth;
 
 import java.util.Map;
 import java.security.SignatureException;
@@ -12,6 +12,11 @@ public class Hmac {
 
     public static void main(String... args) throws SignatureException {
         ModulrApiAuth modulrAuth = new ModulrApiAuth("KNOWN-TOKEN", "SECRET-TOKEN");
+
+        /* Generate required headers for the given API key, hmac secret */
+        Map<String, String> randomNonceHeaders = modulrAuth.generateApiAuthHeaders();
+
+        randomNonceHeaders.forEach((key, value) -> logger.info(key + ": " + value));
 
         /* Generate required headers for the given API key, hmac secret and nonce*/
         Map<String, String> headers = modulrAuth.generateApiAuthHeaders("NONCE");

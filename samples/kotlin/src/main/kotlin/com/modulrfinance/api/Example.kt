@@ -1,4 +1,4 @@
-package com.modulr.api
+package com.modulrfinance.api
 
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpUriRequest
@@ -20,25 +20,27 @@ object Example {
         val signature = Signature(API_KEY, API_SECRET)
 
         // Calculate HMAC signature with current date time and random nonce
-        val result = signature.calculate()
+        val result = signature.generateApiAuthHeaders()
 
         // Call the API with required headers
-        val client: CloseableHttpClient = HttpClients.createDefault()
-        val builder: RequestBuilder = RequestBuilder.get()
+        HttpClients.createDefault().use { client: CloseableHttpClient ->
+            val builder: RequestBuilder = RequestBuilder.get()
                 .setUri(URL)
 
-        result.headers.forEach { (key, value) -> builder.addHeader(key, value) }
+            result.forEach { (key, value) -> builder.addHeader(key, value) }
 
-        val request: HttpUriRequest = builder.build()
-        val response: CloseableHttpResponse = client.execute(request)
+            val request: HttpUriRequest = builder.build()
+            client.execute(request).use { response: CloseableHttpResponse ->
 
-        val statusCode = response.statusLine.statusCode
-        val body = EntityUtils.toString(response.entity)
+                val statusCode = response.statusLine.statusCode
+                val body = EntityUtils.toString(response.entity)
 
-        if (statusCode != 200) {
-            println("Unsuccessful API call, code: $statusCode, body: $body")
-        } else {
-            println(body)
+                if (statusCode != 200) {
+                    println("Unsuccessful API call, code: $statusCode, body: $body")
+                } else {
+                    println(body)
+                }
+            }
         }
     }
 }
